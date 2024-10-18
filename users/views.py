@@ -20,7 +20,7 @@ class RegisterView(generics.CreateAPIView):
 
 class LoginView(views.APIView):
     
-    serialiazer_class = LoginSerializer
+    serializer_class = LoginSerializer
     
     @swagger_auto_schema(
         request_body=openapi.Schema(
@@ -35,7 +35,7 @@ class LoginView(views.APIView):
     )
     
     def post(self, request, *args, **kwargs):
-        serializer = self.serialiazer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = authenticate(
             username=serializer.validated_data['username'],
@@ -43,7 +43,7 @@ class LoginView(views.APIView):
         )
         if user and user.is_active():
             login(request, user)
-            return Response({"user": user.id, "message": "Welcome, you've logged in successfully."})
+            return Response({"username": user.username, "message": "Welcome, you've logged in successfully."}, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
