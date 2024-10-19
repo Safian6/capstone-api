@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, filters
 from .models import Product, Category, Review, Wishlist
 from .serializers import ProductSerializer, CategorySerializer, ReviewSerializer, WishlistSerializer
 from rest_framework import filters
@@ -6,6 +6,40 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
 
 # List and Create Products
+# class ProductCreate(generics.CreateAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#     #permission_classes = [IsAuthenticatedOrReadOnly]
+
+# class ProductList(generics.ListAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#     permission_classes = [IsAuthenticatedOrReadOnly]
+#     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+#     filterset_fields = {
+#         'price': ['gte', 'lte'],
+#         'category': ['exact'],
+#         'stock_quantity': ['exact'],
+#     }
+#     search_fields = ['name', 'category__name']
+
+# class ProductDetail(generics.RetrieveAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#     permission_classes = [IsAuthenticatedOrReadOnly]
+
+# class ProductUpdate(generics.UpdateAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#     permission_classes = [IsAuthenticatedOrReadOnly]
+
+# class ProductDelete(generics.DestroyAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#     permission_classes = [IsAuthenticatedOrReadOnly]
+
+
+
 class ProductListCreate(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -13,13 +47,14 @@ class ProductListCreate(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = {
-        'price': ['gte', 'lte'],  # Filter products by price range (greater than or less than)
-        'stock_quantity': ['gte'],  # Filter by products in stock
+        'price': ['gte', 'lte'],
+        'category': ['exact'],  # Filter products by price range (greater than or less than)
+        'stock_quantity': ['exact'],  # Filter by products in stock
     }
 
 
 
-# Retrieve, Update, and Delete a Product
+# # Retrieve, Update, and Delete a Product
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -38,7 +73,7 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
 class ReviewListCreate(generics.ListCreateAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         # Set the user automatically to the logged-in user
@@ -47,7 +82,7 @@ class ReviewListCreate(generics.ListCreateAPIView):
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         # Restrict users to only update/delete their own reviews

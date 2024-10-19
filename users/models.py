@@ -3,11 +3,12 @@ from django.db import models
 
 # Create your models here.
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, username, password=None, **extra_fields):
-        if not email:
-            raise ValueError('The Email field must be set')
+    def create_user(self, username, email, password=None, **extra_fields):
         if not username:
             raise ValueError('The username field must be set')
+        if not email:
+            raise ValueError('The Email field must be set')
+        
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
