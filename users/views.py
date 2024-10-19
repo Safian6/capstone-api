@@ -19,7 +19,6 @@ class RegisterView(generics.CreateAPIView):
     
 
 class LoginView(views.APIView):
-    
     serializer_class = LoginSerializer
     
     @swagger_auto_schema(
